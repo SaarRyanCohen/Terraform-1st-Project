@@ -1,0 +1,25 @@
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Install Docker engine
+      yum:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Pull Jenkins Docker image
+      shell: docker pull jenkins/jenkins
+
+    - name: Run Jenkins container
+      docker_container:
+        name: jenkins
+        image: jenkins/jenkins
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "8080:8080"
